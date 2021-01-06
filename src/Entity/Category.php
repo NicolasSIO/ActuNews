@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -17,7 +18,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *     }
  * )
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
- * @ApiFilter(SearchFilter::class, properties={"id": "exact", "alias": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"alias": "exact", "posts": "exact"})
  */
 class Category
 {
@@ -29,16 +30,21 @@ class Category
     private $id;
 
     /**
+     * @Assert\Length(max="150", maxMessage="Attention, pas plus de 150 caractères.")
+     * @Assert\NotBlank(message="N'oubliez pas le nom de la catégorie.")
      * @ORM\Column(type="string", length=150)
      */
     private $name;
 
     /**
+     * @Assert\NotBlank(message="N'oubliez pas la description de la catégorie.")
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
     /**
+     * @Assert\Length(max="150", maxMessage="Attention, pas plus de 150 caractères.")
+     * @Assert\NotBlank(message="N'oubliez pas l'alias de la catégorie.")
      * @ORM\Column(type="string", length=150, unique=true)
      */
     private $alias;

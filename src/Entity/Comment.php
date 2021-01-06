@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -20,6 +21,7 @@ class Comment
     private $id;
 
     /**
+     * @Assert\NotBlank(message="N'oubliez pas le contenu du commentaire.")
      * @ORM\Column(type="text")
      */
     private $content;

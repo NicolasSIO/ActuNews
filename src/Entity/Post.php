@@ -7,6 +7,7 @@ use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -27,21 +28,28 @@ class Post
     private $id;
 
     /**
+     * @Assert\Length(max="255", maxMessage="Attention, pas plus de 255 caractères.")
+     * @Assert\NotBlank(message="N'oubliez pas le titre du post.")
      * @ORM\Column(type="string", length=255)
      */
     private $title;
 
     /**
+     * @Assert\Length(max="255", maxMessage="Attention, pas plus de 255 caractères.")
+     * @Assert\NotBlank(message="N'oubliez pas l'alias du post.")
      * @ORM\Column(type="string", length=255)
      */
     private $alias;
 
     /**
+     * @Assert\NotBlank(message="N'oubliez pas le contenu du post.")
      * @ORM\Column(type="text")
      */
     private $content;
 
     /**
+     * @Assert\Length(max="255", maxMessage="Attention, pas plus de 255 caractères.")
+     * @Assert\NotBlank(message="N'oubliez pas l'image du post.")
      * @ORM\Column(type="string", length=255)
      */
     private $image;
