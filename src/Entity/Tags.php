@@ -2,13 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TagsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TagsRepository::class)
+ * @ApiResource()
  */
 class Tags
 {
@@ -21,11 +25,17 @@ class Tags
 
     /**
      * @ORM\Column(type="string", length=150)
+     * @Assert\Length(max="150", maxMessage="Attention, pas plus de 150 caractères.")
+     * @Assert\NotBlank(message="N'oubliez pas le nom de la catégorie.")
+     * @Groups({"post:read"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=150)
+     * @Assert\Length(max="150", maxMessage="Attention, pas plus de 150 caractères.")
+     * @Assert\NotBlank(message="N'oubliez pas le nom de la catégorie.")
+     * @Groups({"post:read"})
      */
     private $alias;
 

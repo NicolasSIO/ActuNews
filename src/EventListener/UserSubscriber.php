@@ -19,9 +19,15 @@ class UserSubscriber implements EventSubscriber
      */
     private $encoder;
 
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    /**
+     * @var MailerInterface
+     */
+    private $mailer;
+
+    public function __construct(UserPasswordEncoderInterface $encoder, MailerInterface $mailer)
     {
         $this->encoder = $encoder;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -30,7 +36,8 @@ class UserSubscriber implements EventSubscriber
     public function getSubscribedEvents()
     {
         return [
-            Events::prePersist
+            Events::prePersist,
+            Events::postPersist
         ];
     }
 
@@ -69,18 +76,32 @@ class UserSubscriber implements EventSubscriber
 
     }
 
-    public function sendEmail(MailerInterface $mailer, LifecycleEventArgs $args)
+    /**
+     * Cette fonction se déclenche juste après l'insertion
+     * d'un élément dans la BDD
+     * @param LifecycleEventArgs $args
+     */
+    public function postPersist(LifecycleEventArgs $args)
+    {
+        $this->sendWelcomeEmail($args);
+    }
+
+    public function sendWelcomeEmail(LifecycleEventArgs $args)
     {
         # 1. Récupération de l'Objet concerné
         $entity = $args->getObject();
 
-        $email = (new Email())
-            ->from('toto@gmail.com')
-            ->to($entity->getEmail())
-            ->subject('Time for Symfony Mailer!')
-            ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
+        # 2. Si mon objet n'est pas une instance de "User" on quitte.
+        if (!$entity instanceof User) {
+            return;
+        }
 
-        $mailer->send($email);
+        $email = (new Email())
+            ->from('noreply@actu.news')
+            ->to($entity->getEmail())
+            ->subject('Bienvenue sur notre site Actunews')
+            ->html('<p>Bonjour, Bienvenue chez Actunews !</p>');
+
+        $this->mailer->send($email);
     }
 }

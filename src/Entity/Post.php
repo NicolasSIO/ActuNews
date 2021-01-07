@@ -2,20 +2,29 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
+ *     normalizationContext={"groups"={"post:read"}},
+ *     denormalizationContext={"groups"={"post:write"}},
  *     attributes={
- *          "pagination_items_per_page"=10,
- *          "order" = { "id" : "DESC" }
+ *          "pagination_items_per_page"=10
  *     }
  * )
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "category.alias": "exact",
+ *     "category": "exact"
+ * })
  * @ORM\Entity(repositoryClass=PostRepository::class)
  */
 class Post
@@ -24,6 +33,7 @@ class Post
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"post:read"})
      */
     private $id;
 
@@ -31,12 +41,12 @@ class Post
      * @Assert\Length(max="255", maxMessage="Attention, pas plus de 255 caractères.")
      * @Assert\NotBlank(message="N'oubliez pas le titre du post.")
      * @ORM\Column(type="string", length=255)
+     * @Groups({"post:read", "post:write"})
      */
     private $title;
 
     /**
      * @Assert\Length(max="255", maxMessage="Attention, pas plus de 255 caractères.")
-     * @Assert\NotBlank(message="N'oubliez pas l'alias du post.")
      * @ORM\Column(type="string", length=255)
      */
     private $alias;
@@ -44,6 +54,7 @@ class Post
     /**
      * @Assert\NotBlank(message="N'oubliez pas le contenu du post.")
      * @ORM\Column(type="text")
+     * @Groups({"post:read", "post:write"})
      */
     private $content;
 
@@ -56,6 +67,7 @@ class Post
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"post:read"})
      */
     private $createdAt;
 
@@ -67,17 +79,20 @@ class Post
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"post:read"})
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"post:read"})
      */
     private $category;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tags::class, mappedBy="posts")
+     * @Groups({"post:read"})
      */
     private $tags;
 
@@ -249,4 +264,11 @@ class Post
 
         return $this;
     }
+
+    /*public function computeSlug(SluggerInterface $slugger)
+    {
+        if (!$this->alias || '-' === $this->alias) {
+            $this->alias = (string) $slugger->slug((string) $this)->lower();
+        }
+    }*/
 }

@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -54,6 +55,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=80)
      * @Assert\Length(max="90", maxMessage="Attention, pas plus de 90 caractères.")
      * @Assert\NotBlank(message="N'oubliez pas votre prénom.")
+     * @Groups({"post:read"})
      */
     private $firstname;
 
@@ -61,6 +63,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=80)
      * @Assert\Length(max="90", maxMessage="Attention, pas plus de 90 caractères.")
      * @Assert\NotBlank(message="N'oubliez pas votre nom.")
+     * @Groups({"post:read"})
      */
     private $lastname;
 

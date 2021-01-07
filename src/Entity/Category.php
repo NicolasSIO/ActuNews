@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -18,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     }
  * )
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
- * @ApiFilter(SearchFilter::class, properties={"alias": "exact", "posts": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"alias": "exact"})
  */
 class Category
 {
@@ -33,6 +35,7 @@ class Category
      * @Assert\Length(max="150", maxMessage="Attention, pas plus de 150 caractères.")
      * @Assert\NotBlank(message="N'oubliez pas le nom de la catégorie.")
      * @ORM\Column(type="string", length=150)
+     * @Groups({"post:read"})
      */
     private $name;
 
@@ -44,7 +47,6 @@ class Category
 
     /**
      * @Assert\Length(max="150", maxMessage="Attention, pas plus de 150 caractères.")
-     * @Assert\NotBlank(message="N'oubliez pas l'alias de la catégorie.")
      * @ORM\Column(type="string", length=150, unique=true)
      */
     private $alias;
@@ -163,4 +165,11 @@ class Category
 
         return $this;
     }
+
+    /*public function computeSlug(SluggerInterface $slugger)
+    {
+        if (!$this->alias || '-' === $this->alias) {
+            $this->alias = (string) $slugger->slug((string) $this)->lower();
+        }
+    }*/
 }
