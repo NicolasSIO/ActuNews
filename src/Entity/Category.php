@@ -165,11 +165,4 @@ class Category
 
         return $this;
     }
-
-    /*public function computeSlug(SluggerInterface $slugger)
-    {
-        if (!$this->alias || '-' === $this->alias) {
-            $this->alias = (string) $slugger->slug((string) $this)->lower();
-        }
-    }*/
 }
