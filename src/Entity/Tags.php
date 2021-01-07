@@ -7,12 +7,15 @@ use App\Repository\TagsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TagsRepository::class)
  * @ApiResource()
+ * @UniqueEntity("alias")
  */
 class Tags
 {
@@ -100,5 +103,12 @@ class Tags
         $this->posts->removeElement($post);
 
         return $this;
+    }
+
+    public function computeSlug(SluggerInterface $slugger)
+    {
+        if (!$this->alias || '-' === $this->alias) {
+            $this->alias = (string) $slugger->slug((string) $this)->lower();
+        }
     }
 }

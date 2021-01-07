@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
  * @ApiFilter(SearchFilter::class, properties={"alias": "exact"})
+ * @UniqueEntity("alias")
  */
 class Category
 {
@@ -164,5 +166,12 @@ class Category
         }
 
         return $this;
+    }
+
+    public function computeSlug(SluggerInterface $alias)
+    {
+        if (!$this->alias || '-' === $this->alias) {
+            $this->alias = (string) $alias->slug((string) $this)->lower();
+        }
     }
 }

@@ -32,3 +32,11 @@ services:
     App\EventListener\UserSubscriber:
         tags:
             - { name: 'doctrine.event_subscriber' }
+    App\EventListener\TagsEntityListener:
+        tags:
+            - { name: 'doctrine.orm.event_listener', event: 'prePersist', entity: 'App\Entity\Tags' }
+            - { name: 'doctrine.orm.event_listener', event: 'preUpdate', entity: 'App\Entity\Tags' }
+    App\EventListener\CategoryEntityListener:
+        tags:
+            - { name: 'doctrine.orm.event_listener', event: 'prePersist', entity: 'App\Entity\Category' }
+            - { name: 'doctrine.orm.event_listener', event: 'preUpdate', entity: 'App\Entity\Category' }
