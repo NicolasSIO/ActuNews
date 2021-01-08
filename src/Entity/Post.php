@@ -46,8 +46,8 @@ class Post
     private $title;
 
     /**
-     * @Assert\Length(max="255", maxMessage="Attention, pas plus de 255 caractères.")
      * @ORM\Column(type="string", length=255)
+     * @Groups({"post:read"})
      */
     private $alias;
 
@@ -62,37 +62,39 @@ class Post
      * @Assert\Length(max="255", maxMessage="Attention, pas plus de 255 caractères.")
      * @Assert\NotBlank(message="N'oubliez pas l'image du post.")
      * @ORM\Column(type="string", length=255)
+     * @Groups({"post:read", "post:write"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"post:read"})
+     * @Groups({"post:read", "post:write"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"post:read", "post:write"})
      */
     private $updatedAt;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"post:read"})
+     * @Groups({"post:read", "post:write"})
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"post:read"})
+     * @Groups({"post:read", "post:write"})
      */
     private $category;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tags::class, mappedBy="posts")
-     * @Groups({"post:read"})
+     * @Groups({"post:read", "post:write"})
      */
     private $tags;
 
